@@ -3,13 +3,29 @@
 #include <signal.h>
 #include <time.h>
 #include "driver/elevio.h"
+#include "driver/initilize_pos.h"
 
 
 
 int main(){
+    
+    //lager globale variabler
+    int g_floor=-1; //starter å"minus 1 fordi det er defionert som udefinert
+    int g_previous_floor=-1;
+    MotorDirection g_elevator_direction=DIRN_STOP;
+    
+    
+    
+    
     elevio_init();
     
+    
+    //initialiserer posisjonen
+    startup_procedure(&g_floor, &g_elevator_direction);
+    
+    
     printf("=== Example Program ===\n");
+   
     printf("Press the stop button on the elevator panel to exit\n");
 
     elevio_motorDirection(DIRN_UP);
