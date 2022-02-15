@@ -14,7 +14,11 @@ int main(){
     int g_floor=-1; //starter å"minus 1 fordi det er defionert som udefinert
     int g_previous_floor=-1;
     MotorDirection g_elevator_direction=DIRN_STOP;
-    int temp=0;
+    int oppStopp[4]={0,0,0,0};
+    int nedStopp[4]={0,0,0,0};
+    int ko[5]={-1,-1,-1,-1, -1};
+
+    int temp=0;  //midlertidig testkonstant
     
     
     
@@ -28,33 +32,28 @@ int main(){
     elevio_stopLamp(0);
 
 
-    
+    elevio_motorDirection(DIRN_UP);
     
     printf("=== Example Program ===\n");
    
     printf("Press the stop button on the elevator panel to exit\n");
-
-    elevio_motorDirection(DIRN_UP);
-
+elevio_stopLamp(0);
     while(1){
         g_floor=elevio_floorSensor();
         update_previous_floor_state(g_floor, &g_previous_floor);
         elevio_floorIndicator(g_previous_floor);
         if(elevio_stopButton()){
             its_time_to_stop(&g_elevator_direction);
-            if (temp <20){
-                temp = temp + 1;
-            }else{
-            break;}
+            break;
         }else{
             elevio_stopLamp(0);
         
 
-       
+            
 
         
         int floor = elevio_floorSensor();
-        printf("floor: %d \n",floor);
+       
 
         if(floor == 0){
             elevio_motorDirection(DIRN_UP);
@@ -69,8 +68,12 @@ int main(){
             for(int b = 0; b < N_BUTTONS; b++){
                 int btnPressed = elevio_callButton(f, b);
                 elevio_buttonLamp(f, b, btnPressed);
+                if (btnPressed==1){
+                       printf("floor: %d. button: %d \n",f,b);}
+
             }
         }
+        printf("kpoen %d");
 /*
         if(elevio_obstruction()){
             elevio_stopLamp(1);
