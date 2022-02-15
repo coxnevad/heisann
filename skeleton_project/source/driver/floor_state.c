@@ -29,18 +29,20 @@ if (*ko_ref[0]==-1){
 }
 
 }
-void add_to_queue_up_down(int *oppStopp_ref[4], int *nedStopp_ref[4]){
+int add_to_queue_up_down(int oppStopp_ref[], int nedStopp_ref[]){
     for(int f = 0; f < N_FLOORS; f++){
             for(int b = 0; b < N_BUTTONS; b++){
                 int btnPressed = elevio_callButton(f, b);
                 elevio_buttonLamp(f, b, btnPressed);
                 if (btnPressed==1){
                        if(b==1){
-                           *nedStopp_ref[f]=1;
+                           nedStopp_ref[f]=1;
+                           return nedStopp_ref;
                        }else if(b==0){
-                           *oppStopp_ref[f]=1;
+                           oppStopp_ref[f]=1;
+                           return oppStopp_ref;
                        }
             }
         }
 
-}}
+} }

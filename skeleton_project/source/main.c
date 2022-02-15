@@ -64,7 +64,7 @@ elevio_stopLamp(0);
         }
 
 
-        for(int f = 0; f < N_FLOORS; f++){
+        /*for(int f = 0; f < N_FLOORS; f++){
             for(int b = 0; b < N_BUTTONS; b++){
                 int btnPressed = elevio_callButton(f, b);
                 elevio_buttonLamp(f, b, btnPressed);
@@ -72,8 +72,9 @@ elevio_stopLamp(0);
                        printf("floor: %d. button: %d \n",f,b);}
 
             }
-        }
-        printf("kpoen %d");
+        }*/
+        add_to_queue_up_down(oppStopp, nedStopp);
+        printf("kpoen %d", oppStopp[1]);
 /*
         if(elevio_obstruction()){
             elevio_stopLamp(1);
