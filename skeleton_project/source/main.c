@@ -16,7 +16,7 @@ int main(){
     MotorDirection g_elevator_direction=DIRN_STOP;
     int oppStopp[4]={0,0,0,0};
     int nedStopp[4]={0,0,0,0};
-    int ko[5]={-1,-1,-1,-1, -1};
+    int overordnet_ko[5]={-1,-1,-1,-1,-1};
 
     int temp=0;  //midlertidig testkonstant
     
@@ -29,19 +29,35 @@ int main(){
     startup_procedure(&g_floor, &g_elevator_direction);
     update_previous_floor_state(g_floor, &g_previous_floor);
     elevio_floorIndicator(g_previous_floor);
-    elevio_stopLamp(0);
+    
 
-
-    elevio_motorDirection(DIRN_UP);
     
     printf("=== Example Program ===\n");
-   
     printf("Press the stop button on the elevator panel to exit\n");
-elevio_stopLamp(0);
+
     while(1){
+        //routine check
         g_floor=elevio_floorSensor();
         update_previous_floor_state(g_floor, &g_previous_floor);
         elevio_floorIndicator(g_previous_floor);
+        //routine check dione
+
+        if (elevio_stopButton()){
+            elevio_stopLamp(1);
+            break;
+
+        }else{
+            fetch_order_from_floor(&oppStopp[0], &nedStopp[0]);
+            activate_floor_order_lights(&oppStopp[0], &nedStopp[0]);
+
+            fetch_order_from_elevator(&overordnet_ko[0]);
+            activate_elevator_lights(&overordnet_ko[0]);
+
+           printf("ko=[%i, %i, %i, %i, %i]", overordnet_ko[0],overordnet_ko[1], overordnet_ko[2], overordnet_ko[3], overordnet_ko[4]);
+        }
+
+
+    /*
         if(elevio_stopButton()){
             its_time_to_stop(&g_elevator_direction);
             break;
@@ -64,7 +80,7 @@ elevio_stopLamp(0);
         }
 
 
-        /*for(int f = 0; f < N_FLOORS; f++){
+        for(int f = 0; f < N_FLOORS; f++){
             for(int b = 0; b < N_BUTTONS; b++){
                 int btnPressed = elevio_callButton(f, b);
                 elevio_buttonLamp(f, b, btnPressed);
@@ -72,18 +88,16 @@ elevio_stopLamp(0);
                        printf("floor: %d. button: %d \n",f,b);}
 
             }
-        }*/
-        add_to_queue_up_down(oppStopp, nedStopp);
-        printf("kpoen %d", oppStopp[1]);
-/*
+        }
+        
         if(elevio_obstruction()){
             elevio_stopLamp(1);
         } else {
             elevio_stopLamp(0);
         }
-        */
         
-        }
+        
+        }*/
         nanosleep(&(struct timespec){0, 20*1000*1000}, NULL);
     }
 

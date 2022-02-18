@@ -14,4 +14,5 @@ void startup_procedure(int *floor_ref, MotorDirection *direction_ref){
     *floor_ref= elevio_floorSensor();
     *direction_ref = DIRN_STOP;
     elevio_motorDirection(DIRN_STOP);
+    elevio_stopLamp(0);
 }
