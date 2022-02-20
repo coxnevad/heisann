@@ -56,6 +56,9 @@ void fetch_order_from_elevator(int * ko_vektor){
         }
     }
 }
+
+
+
 void add_to_ko(int* ko, int added_floor){
     
     if(check_if_element_not_in_queue(ko, added_floor)){
@@ -81,6 +84,7 @@ int check_if_element_not_in_queue(int* queue, int element){
 }
 
 void activate_elevator_lights(int * ko){
+
     /*
     for(int i =0; i < ko_size; i++){
         if(*(ko+i)!=-1){
@@ -93,6 +97,42 @@ void activate_elevator_lights(int * ko){
         }
         else{
             elevio_buttonLamp(j, BUTTON_CAB, 1);
+        }
+    }
+}
+
+
+
+
+int check_for_orders_at_floor(int floor, int * heis_ko, int * opp_ko, int * ned_ko, MotorDirection * direction){
+    int stop =0;
+    if(floor ==-1){
+        return stop;
+    }
+    if (*direction == DIRN_UP){
+        if(*(opp_ko+floor)==1){
+            stop = 1;
+        }
+    }else if(*direction== DIRN_DOWN){
+        if(*(ned_ko+floor)==1){
+            stop = 1;
+        }
+    }
+    if(check_if_element_not_in_queue(heis_ko, floor)==0){
+        stop = 1;
+    }
+    return stop;
+
+}
+
+void delete_and_sort_queue(int floor, int * heis_ko, int * opp_ko, int *ned_ko){
+    *(opp_ko+floor)=0;
+    *(ned_ko+floor)=0;
+    for (int i = 0; i < ko_size-1; i++){
+        if (*(heis_ko+i)==floor){
+            for(int j=0; j < ko_size-i-1; j++){
+                *(heis_ko+i+j)=*(heis_ko+i+j+1);
+            }
         }
     }
 }

@@ -3,6 +3,7 @@
 
 #define N_FLOORS 4
 
+
 typedef enum { 
     DIRN_DOWN   = -1,
     DIRN_STOP   = 0,

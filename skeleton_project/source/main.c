@@ -17,6 +17,8 @@ int main(){
     int oppStopp[4]={0,0,0,0};
     int nedStopp[4]={0,0,0,0};
     int overordnet_ko[5]={-1,-1,-1,-1,-1};
+    int g_floorstop=0;
+    int g_time_count=0;
 
     int temp=0;  //midlertidig testkonstant
     
@@ -53,7 +55,39 @@ int main(){
             fetch_order_from_elevator(&overordnet_ko[0]);
             activate_elevator_lights(&overordnet_ko[0]);
 
-           printf("ko=[%i, %i, %i, %i, %i]", overordnet_ko[0],overordnet_ko[1], overordnet_ko[2], overordnet_ko[3], overordnet_ko[4]);
+            //__________________
+
+            if(overordnet_ko[0]==-1){
+                g_elevator_direction=DIRN_STOP;
+            }else if(g_previous_floor < overordnet_ko[0]){
+                g_elevator_direction=DIRN_UP;
+            }else if(overordnet_ko[0]<g_previous_floor){
+                g_elevator_direction=DIRN_DOWN;
+            }
+
+            g_floorstop= check_for_orders_at_floor(g_floor, &overordnet_ko[0], &oppStopp[0], &nedStopp[0], &g_elevator_direction);
+            printf("%i\n", g_floorstop);
+            //______________________________
+                    if(g_floorstop==1){
+                        elevio_doorOpenLamp(1);
+                        g_elevator_direction=DIRN_STOP;
+                        if(g_time_count <THREE_SECONDS_IN_STEPS){
+                            g_time_count= g_time_count+1;
+                        }else{
+                            if(elevio_obstruction()==0){
+                                g_time_count=0;
+                                elevio_doorOpenLamp(0);
+                                delete_and_sort_queue(g_floor, &overordnet_ko[0], &oppStopp[0], &nedStopp[0]);
+
+                            }
+                        }
+
+                    }
+
+            //______________________________
+
+           //printf("ko=[%i, %i, %i, %i, %i]", overordnet_ko[0],overordnet_ko[1], overordnet_ko[2], overordnet_ko[3], overordnet_ko[4]);
+           elevio_motorDirection(g_elevator_direction);
         }
 
 

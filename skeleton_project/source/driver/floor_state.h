@@ -4,6 +4,7 @@
 #include <time.h>
 
 #define ko_size 5
+#define THREE_SECONDS_IN_STEPS 65
 
 
 
@@ -23,3 +24,7 @@ void add_to_ko(int* ko, int added_floor);
 int check_if_element_not_in_queue(int* queue, int element);
 
 void activate_elevator_lights(int * ko);
+
+int check_for_orders_at_floor(int floor, int * heis_ko, int * opp_ko, int * ned_ko, MotorDirection * direction);
+
+void delete_and_sort_queue(int floor, int * heis_ko, int * opp_ko, int *ned_ko);
