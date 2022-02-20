@@ -7,20 +7,45 @@ void update_previous_floor_state(int current_floor, int *previous_floor){
     }
 }
 
-void update_stop_light(){
-        elevio_stopLamp(1);
+int check_stopbutton_pushed(int * heis_ko, int * opp_ko, int * ned_ko){
+    if(elevio_stopButton() == 0){                               //Hvis knappen ikke er trykket inn 
+        return 0;                                               //returnerer vi 0 eller "false"
+    }
+    elevio_motorDirection(DIRN_STOP);                           //Hvis ikke er den trykket inn, og vi skal stoppe
+    //current_direction = DIRN_STOP;                            //Kanskje oppdatere motorretningen???
+    activate_stop_light();                                      //Så skrur vi på lyset
+    delete_queue_stopbutton_pressed(heis_ko, opp_ko, ned_ko);   //sletter alle bestillinger
+    return 1;                                                   //returnerer 1 eller "true", slik at vi får hoppet inn i en if-setning 
+                                                                //som har continue, slik at vi hopper tilbake til toppen av while-løkken
+                                                                //så slipper vi å ha break
 }
-   
 
-void stop_direct_consequence(MotorDirection *current_direction){
-    *current_direction = DIRN_STOP;
-    elevio_motorDirection(DIRN_STOP); 
-   
+int emergency_stop(){                                                 //lager en nødstopp
+    if(elevio_obstruction() == 1 &&  elevio_stopButton() == 1){       //Hvis både stopp og obstruction er høy
+        return 1;                                                     //så returnerer vi TRUE som skal aktivere en break
+    }
+    return 0;                                                         // ellers ingenting
 }
 
-void its_time_to_stop(MotorDirection *current_direction){
-    update_stop_light();
-    stop_direct_consequence(current_direction);
+void delete_queue_stopbutton_pressed(int * heis_ko, int * opp_ko, int * ned_ko){
+    int heis_ko_storrelse = 5;                          //5 elementer i heis_ko
+    int opp_ned_ko_storrelse = 4;                       //4 elementer i både opp og ned ko
+    for(int element = 0; element < heis_ko_storrelse; element++){
+        *(heis_ko + element) = -1;                      //her skal alle elementene i køen settes til
+    }                                                   // -1 som er "udefinert"
+    for(int element = 0; element < opp_ned_ko_storrelse; element++){
+        *(opp_ko + element) = 0;                        //skal settes til false
+        *(ned_ko + element) = 0;
+    }    
+}
+
+void activate_stop_light(){
+        elevio_stopLamp(1);                             //skrur på lyset
+}
+
+void deactivate_stop_light(){
+        elevio_stopLamp(0);                             //skrur av lyset
+   
 }
 
 void fetch_order_from_floor(int * opp_vektor, int * ned_vektor){
@@ -47,7 +72,6 @@ void activate_floor_order_lights(int * opp_vektor, int * ned_vektor){
     }
 }
 
-
 void fetch_order_from_elevator(int * ko_vektor){
     for (int f=0; f < N_FLOORS; f++){
         if(elevio_callButton(f, BUTTON_CAB)){
@@ -56,8 +80,6 @@ void fetch_order_from_elevator(int * ko_vektor){
         }
     }
 }
-
-
 
 void add_to_ko(int* ko, int added_floor){
     
@@ -71,6 +93,7 @@ void add_to_ko(int* ko, int added_floor){
     }
     }
 }
+
 int check_if_element_not_in_queue(int* queue, int element){
 
     int element_not_found=1;
@@ -100,9 +123,6 @@ void activate_elevator_lights(int * ko){
         }
     }
 }
-
-
-
 
 int check_for_orders_at_floor(int floor, int * heis_ko, int * opp_ko, int * ned_ko, MotorDirection * direction){
     int stop =0;

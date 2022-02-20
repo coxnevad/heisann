@@ -10,10 +10,12 @@
 
 void update_previous_floor_state(int current_floor, int *previous_floor);
 
-void its_time_to_stop(MotorDirection *current_direction);
-void update_stop_light();
-void stop_direct_consequence(MotorDirection *current_direction);
-void stop_delete_queue(); //Implementer senere når vi har laget køsystem
+int check_stopbutton_pushed(int * heis_ko, int * opp_ko, int * ned_ko);
+void activate_stop_light();
+void deactivate_stop_light();
+void delete_queue_stopbutton_pressed(int * heis_ko, int * opp_ko, int * ned_ko);
+
+int emergency_stop();
 
 void fetch_order_from_floor(int * opp_vektor, int * ned_vektor);
 

@@ -44,11 +44,15 @@ int main(){
         elevio_floorIndicator(g_previous_floor);
         //routine check dione
 
-        if (elevio_stopButton()){
-            elevio_stopLamp(1);
+        if(emergency_stop() == 1){
             break;
+        }
 
+        if (check_stopbutton_pushed(&overordnet_ko, &oppStopp, &nedStopp)){  //Sender inn funksjonen, hvis knappen er trykket ned
+            continue;                                                        //Hopp tilbake til toppen av while løkken
+            
         }else{
+            deactivate_stop_light();                                         //skrur av lyset
             fetch_order_from_floor(&oppStopp[0], &nedStopp[0]);
             activate_floor_order_lights(&oppStopp[0], &nedStopp[0]);
 
