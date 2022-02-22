@@ -4,12 +4,12 @@
 
 void startup_procedure(int *floor_ref, MotorDirection *direction_ref){
     while(elevio_floorSensor()<0){
-        elevio_motorDirection(DIRN_DOWN);
+        elevio_motorDirection(DIRN_UP);
         nanosleep(&(struct timespec){0, 20*1000*1000}, NULL);
 
         int temp_floor = elevio_floorSensor();
         printf("floor: %d \n",temp_floor);
-        *direction_ref=DIRN_DOWN;
+        *direction_ref=DIRN_UP;
     }
     *floor_ref= elevio_floorSensor();
     *direction_ref = DIRN_STOP;

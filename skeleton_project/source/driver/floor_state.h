@@ -2,15 +2,16 @@
 #include <stdio.h>
 #include "elevio.h"
 #include <time.h>
+#include <math.h>
 
 #define ko_size 5
 #define THREE_SECONDS_IN_STEPS 65
 
+void update_current_floor_state(float* current_floor, int floor_sensor, MotorDirection *direction, int * previous_floor);
 
+void update_previous_floor_state(int floor_sensor, int *previous_floor);
 
-void update_previous_floor_state(int current_floor, int *previous_floor);
-
-int check_stopbutton_pushed(int * heis_ko, int * opp_ko, int * ned_ko);
+int check_stopbutton_pushed(int * heis_ko, int * opp_ko, int * ned_ko, MotorDirection * direction);
 void activate_stop_light();
 void deactivate_stop_light();
 void delete_queue_stopbutton_pressed(int * heis_ko, int * opp_ko, int * ned_ko);

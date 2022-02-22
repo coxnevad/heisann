@@ -11,7 +11,8 @@
 int main(){
     
     //lager globale variabler
-    int g_floor=-1; //starter å"minus 1 fordi det er defionert som udefinert
+    int g_floor_sensor=-1; //starter å"minus 1 fordi det er defionert som udefinert
+    float g_current_floor=0;
     int g_previous_floor=-1;
     MotorDirection g_elevator_direction=DIRN_STOP;
     int oppStopp[4]={0,0,0,0};
@@ -28,8 +29,8 @@ int main(){
     
     
     //initialiserer posisjonen
-    startup_procedure(&g_floor, &g_elevator_direction);
-    update_previous_floor_state(g_floor, &g_previous_floor);
+    startup_procedure(&g_floor_sensor, &g_elevator_direction);
+    update_previous_floor_state(g_floor_sensor, &g_previous_floor);
     elevio_floorIndicator(g_previous_floor);
     
 
@@ -39,16 +40,19 @@ int main(){
 
     while(1){
         //routine check
-        g_floor=elevio_floorSensor();
-        update_previous_floor_state(g_floor, &g_previous_floor);
+        g_floor_sensor=elevio_floorSensor();
+        
+        update_previous_floor_state(g_floor_sensor, &g_previous_floor);
         elevio_floorIndicator(g_previous_floor);
+        
         //routine check dione
+        printf("previous floor = %f\n", g_current_floor);
 
         if(emergency_stop() == 1){
             break;
         }
 
-        if (check_stopbutton_pushed(&overordnet_ko[0], &oppStopp[0], &nedStopp[0])){  //Sender inn funksjonen, hvis knappen er trykket ned
+        if (check_stopbutton_pushed(&overordnet_ko[0], &oppStopp[0], &nedStopp[0], &g_elevator_direction)){  //Sender inn funksjonen, hvis knappen er trykket ned
             continue;                                                        //Hopp tilbake til toppen av while løkken
             
         }else{
@@ -63,14 +67,15 @@ int main(){
 
             if(overordnet_ko[0]==-1){
                 g_elevator_direction=DIRN_STOP;
-            }else if(g_previous_floor < overordnet_ko[0]){
+            }else if(g_current_floor < overordnet_ko[0]){
                 g_elevator_direction=DIRN_UP;
-            }else if(overordnet_ko[0]<g_previous_floor){
+            }else if(overordnet_ko[0]<g_current_floor){
                 g_elevator_direction=DIRN_DOWN;
             }
+            update_current_floor_state(&g_current_floor,g_floor_sensor, &g_elevator_direction, &g_previous_floor);
 
-            g_floorstop= check_for_orders_at_floor(g_floor, &overordnet_ko[0], &oppStopp[0], &nedStopp[0], &g_elevator_direction);
-            printf("%i\n", g_floorstop);
+            g_floorstop= check_for_orders_at_floor(g_floor_sensor, &overordnet_ko[0], &oppStopp[0], &nedStopp[0], &g_elevator_direction);
+            //printf("%i\n", g_floorstop);
             //______________________________
                     if(g_floorstop==1){
                         elevio_doorOpenLamp(1);
@@ -81,7 +86,7 @@ int main(){
                             if(elevio_obstruction()==0){
                                 g_time_count=0;
                                 elevio_doorOpenLamp(0);
-                                delete_and_sort_queue(g_floor, &overordnet_ko[0], &oppStopp[0], &nedStopp[0]);
+                                delete_and_sort_queue(g_floor_sensor, &overordnet_ko[0], &oppStopp[0], &nedStopp[0]);
 
                             }
                         }

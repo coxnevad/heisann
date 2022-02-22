@@ -1,16 +1,53 @@
 #include "floor_state.h"
 
 
-void update_previous_floor_state(int current_floor, int *previous_floor){
-    if (current_floor > -1){
-        *previous_floor=current_floor;        
+
+void update_current_floor_state(float* current_floor, int floor_sensor, MotorDirection *direction, int * previous_floor){
+    float differance=0.0;                               //variabelen som skal inneholde differansen (i fabsoluttverdi) mellom den forrige og eventuelt nye verdien til current floor. 
+    float former_current_floor_value =*current_floor;   //Den tidligere verdien av *current_floor*, det ene leddet i difereansseregnestykket
+    float possible_new_current_floor_value =0;          //Den mulige nye verdien current floor skal bli til. 
+    if(floor_sensor == -1){                             //sjekker for om vi er mellom to etasjer. 
+        switch (*direction) 
+        {
+        case DIRN_DOWN:                                                                             //(hele switch-case)
+            possible_new_current_floor_value = *previous_floor - 0.5;                               //sjekker retningen og tar avhengig av retningen + eller - 
+            break;                                                                                  //verdien av tidligere etasje.
+        case DIRN_UP:
+           possible_new_current_floor_value = *previous_floor + 0.5;
+            break;
+        
+        default:
+            break;  
+        }                                                                                            //Sjekker om det er en gyldig differanse mellom tidligere og eventuelt nye verdi av current_floor
+        differance=fabs(possible_new_current_floor_value-former_current_floor_value);                //beholder verdien om differansen er mindre enn 1, forkaster den hvis ikke. 
+        if(differance <1){
+            *current_floor=possible_new_current_floor_value;
+        }
+
+        /*
+        har ett problem ved tilfelet når vi stopper mellom to etasjer og skal til etasjen vi sist var i, da ender vi opp i en loop, der "current_floor" vil 
+        hele tiden tro at den er over eller under fordi retningen bestemmer og vil motvirke den tidligere retningen og dermed "spinne"
+
+        Vi endte med å ikke løse problemet, bare ignorerte alle tilfeller når currentfloor, vil oppdatere seg med en verdi større eller er lik 1. 
+        Feilen er ikke borte, den bare påvirker ikke programmet lengre. 
+        */
+    }else{
+        *current_floor = floor_sensor;
+    }
+    
+}
+
+void update_previous_floor_state(int floor_sensor, int *previous_floor){
+    if (floor_sensor > -1){
+        *previous_floor=floor_sensor;        
     }
 }
 
-int check_stopbutton_pushed(int * heis_ko, int * opp_ko, int * ned_ko){
+int check_stopbutton_pushed(int * heis_ko, int * opp_ko, int * ned_ko, MotorDirection * direction){
     if(elevio_stopButton() == 0){                               //Hvis knappen ikke er trykket inn 
         return 0;                                               //returnerer vi 0 eller "false"
     }
+    *direction=DIRN_STOP;
     elevio_motorDirection(DIRN_STOP);                           //Hvis ikke er den trykket inn, og vi skal stoppe
     //current_direction = DIRN_STOP;                            //Kanskje oppdatere motorretningen???
     activate_stop_light();                                      //Så skrur vi på lyset
@@ -124,32 +161,32 @@ void activate_elevator_lights(int * ko){
     }
 }
 
-int check_for_orders_at_floor(int floor, int * heis_ko, int * opp_ko, int * ned_ko, MotorDirection * direction){
+int check_for_orders_at_floor(int floor_sensor, int * heis_ko, int * opp_ko, int * ned_ko, MotorDirection * direction){
     int stop =0;
-    if(floor ==-1){
+    if(floor_sensor ==-1){
         return stop;
     }
     if (*direction == DIRN_UP){
-        if(*(opp_ko+floor)==1){
+        if(*(opp_ko+floor_sensor)==1){
             stop = 1;
         }
     }else if(*direction== DIRN_DOWN){
-        if(*(ned_ko+floor)==1){
+        if(*(ned_ko+floor_sensor)==1){
             stop = 1;
         }
     }
-    if(check_if_element_not_in_queue(heis_ko, floor)==0){
+    if(check_if_element_not_in_queue(heis_ko, floor_sensor)==0){
         stop = 1;
     }
     return stop;
 
 }
 
-void delete_and_sort_queue(int floor, int * heis_ko, int * opp_ko, int *ned_ko){
-    *(opp_ko+floor)=0;
-    *(ned_ko+floor)=0;
+void delete_and_sort_queue(int floor_sensor, int * heis_ko, int * opp_ko, int *ned_ko){
+    *(opp_ko+floor_sensor)=0;
+    *(ned_ko+floor_sensor)=0;
     for (int i = 0; i < ko_size-1; i++){
-        if (*(heis_ko+i)==floor){
+        if (*(heis_ko+i)==floor_sensor){
             for(int j=0; j < ko_size-i-1; j++){
                 *(heis_ko+i+j)=*(heis_ko+i+j+1);
             }
