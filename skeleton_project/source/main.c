@@ -23,7 +23,9 @@ int main(){
 
     int temp=0;  //midlertidig testkonstant
     
+    int this_computer_clock_freq = 2.9*pow(10,4);
     
+
     
     elevio_init();
     
@@ -33,13 +35,19 @@ int main(){
     update_previous_floor_state(g_floor_sensor, &g_previous_floor);
     elevio_floorIndicator(g_previous_floor);
     time_t t1 = time(NULL);
-        
+    time_t t2 = time(NULL);    
     
 
     
     printf("=== Example Program ===\n");
     printf("Press the stop button on the elevator panel to exit\n");
+    printf("Difftime: %f\n", difftime(t2,t1));
+    while(difftime(t2,t1) < 3.0){
+        t2 = time(NULL);
+        printf("Difftime: %f\n", difftime(t2,t1));
+    }   
 
+    printf("Clocks_per_sec = %d\n", CLOCKS_PER_SEC);
 
     while(1){
         //routine check
@@ -48,11 +56,11 @@ int main(){
         update_previous_floor_state(g_floor_sensor, &g_previous_floor);
         elevio_floorIndicator(g_previous_floor);
 
-       time_t t2 = time(NULL);
+       //time_t t2 = time(NULL);
         
          
         //routine check dione
-        printf("previous floor = %f\n", difftime(t1, t2));
+        //printf("previous floor = %f\n", difftime(t1, t2));
 
         if(emergency_stop() == 1){
             break;
@@ -63,7 +71,7 @@ int main(){
             
         }else{
             deactivate_stop_light();                                         //skrur av lyset
-            fetch_order_from_floor(&oppStopp[0], &nedStopp[0]);
+            fetch_order_from_floor(&oppStopp[0], &nedStopp[0], &overordnet_ko[0]);
             activate_floor_order_lights(&oppStopp[0], &nedStopp[0]);
 
             fetch_order_from_elevator(&overordnet_ko[0]);
@@ -93,7 +101,6 @@ int main(){
                                 g_time_count=0;
                                 elevio_doorOpenLamp(0);
                                 delete_and_sort_queue(g_floor_sensor, &overordnet_ko[0], &oppStopp[0], &nedStopp[0]);
-
                             }
                         }
 

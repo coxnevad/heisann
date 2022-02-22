@@ -49,7 +49,6 @@ int check_stopbutton_pushed(int * heis_ko, int * opp_ko, int * ned_ko, MotorDire
     }
     *direction=DIRN_STOP;
     elevio_motorDirection(DIRN_STOP);                           //Hvis ikke er den trykket inn, og vi skal stoppe
-    //current_direction = DIRN_STOP;                            //Kanskje oppdatere motorretningen???
     activate_stop_light();                                      //Så skrur vi på lyset
     delete_queue_stopbutton_pressed(heis_ko, opp_ko, ned_ko);   //sletter alle bestillinger
     return 1;                                                   //returnerer 1 eller "true", slik at vi får hoppet inn i en if-setning 
@@ -77,15 +76,22 @@ void delete_queue_stopbutton_pressed(int * heis_ko, int * opp_ko, int * ned_ko){
 }
 
 void activate_stop_light(){
-        elevio_stopLamp(1);                             //skrur på lyset
+        elevio_stopLamp(1);                                 //skrur på stop-lyset
+        if(elevio_floorSensor() > -1){                      //Hvis vi er i en etasje:
+            elevio_doorOpenLamp(1);                         //Så skruv vi på etasje-lyset
+        }
 }
 
 void deactivate_stop_light(){
         elevio_stopLamp(0);                             //skrur av lyset
+        //BYTT UT INNHOLDET I IF-SETNINGEN UNDER MED TIDSLOGIKK, HVIS STOPPKNAPPEN IKKE ER TRYKKET LENGER, OG TIDSDIFFERANSEN ER PÅ 3 SEK, SÅ SKAL DØREN LUKKES
+        if(elevio_floorSensor() == -1){                 //Hvis vi ikke er i en etasje lenger
+            elevio_doorOpenLamp(0);                     
+        }
    
 }
 
-void fetch_order_from_floor(int * opp_vektor, int * ned_vektor){
+void fetch_order_from_floor(int * opp_vektor, int * ned_vektor, int* heis_ko){
     
     int * floor_lib[2]={opp_vektor, ned_vektor};
     
@@ -93,6 +99,7 @@ void fetch_order_from_floor(int * opp_vektor, int * ned_vektor){
         for(int b=0; b<N_BUTTONS-1; b++){
             if(elevio_callButton(f,b)){
                 *(floor_lib[b]+f)=1;
+               // add_to_ko(heis_ko, f);      //OBSOBSOBS. må legge til en ny array som bestemmer lys i køen. for nå skrus flere lys på. 
             }
         }
     }

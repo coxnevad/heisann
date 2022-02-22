@@ -18,7 +18,7 @@ void delete_queue_stopbutton_pressed(int * heis_ko, int * opp_ko, int * ned_ko);
 
 int emergency_stop();
 
-void fetch_order_from_floor(int * opp_vektor, int * ned_vektor);
+void fetch_order_from_floor(int * opp_vektor, int * ned_vektor, int* heis_ko);
 
 void activate_floor_order_lights(int * opp_vektor, int * ned_vektor);
 
