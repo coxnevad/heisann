@@ -48,7 +48,7 @@ int main(){
             break;
         }
 
-        if (check_stopbutton_pushed(&overordnet_ko, &oppStopp, &nedStopp)){  //Sender inn funksjonen, hvis knappen er trykket ned
+        if (check_stopbutton_pushed(&overordnet_ko[0], &oppStopp[0], &nedStopp[0])){  //Sender inn funksjonen, hvis knappen er trykket ned
             continue;                                                        //Hopp tilbake til toppen av while løkken
             
         }else{

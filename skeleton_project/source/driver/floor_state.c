@@ -28,9 +28,9 @@ int emergency_stop(){                                                 //lager en
 }
 
 void delete_queue_stopbutton_pressed(int * heis_ko, int * opp_ko, int * ned_ko){
-    int heis_ko_storrelse = 5;                          //5 elementer i heis_ko
+                                                        //5 elementer i heis_ko
     int opp_ned_ko_storrelse = 4;                       //4 elementer i både opp og ned ko
-    for(int element = 0; element < heis_ko_storrelse; element++){
+    for(int element = 0; element < ko_size; element++){
         *(heis_ko + element) = -1;                      //her skal alle elementene i køen settes til
     }                                                   // -1 som er "udefinert"
     for(int element = 0; element < opp_ned_ko_storrelse; element++){
