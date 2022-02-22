@@ -32,11 +32,14 @@ int main(){
     startup_procedure(&g_floor_sensor, &g_elevator_direction);
     update_previous_floor_state(g_floor_sensor, &g_previous_floor);
     elevio_floorIndicator(g_previous_floor);
+    time_t t1 = time(NULL);
+        
     
 
     
     printf("=== Example Program ===\n");
     printf("Press the stop button on the elevator panel to exit\n");
+
 
     while(1){
         //routine check
@@ -44,9 +47,12 @@ int main(){
         
         update_previous_floor_state(g_floor_sensor, &g_previous_floor);
         elevio_floorIndicator(g_previous_floor);
+
+       time_t t2 = time(NULL);
         
+         
         //routine check dione
-        printf("previous floor = %f\n", g_current_floor);
+        printf("previous floor = %f\n", difftime(t1, t2));
 
         if(emergency_stop() == 1){
             break;
