@@ -17,8 +17,10 @@ int main(){
     MotorDirection g_elevator_direction=DIRN_STOP;
     int oppStopp[4]={0,0,0,0};
     int nedStopp[4]={0,0,0,0};
+    int heislys[4]={0,0,0,0};
     int overordnet_ko[5]={-1,-1,-1,-1,-1};
     int g_floorstop=0;
+    int g_floor_stop_case_e=0;
  
 
 
@@ -54,20 +56,19 @@ int main(){
         //routine check dione
         //printf("previous floor = %f\n", difftime(t1, t2));
 
-        if(emergency_stop() == 1){
-            break;
-        }
+        
 
-        if (check_stopbutton_pushed(&overordnet_ko[0], &oppStopp[0], &nedStopp[0], &g_elevator_direction)){  //Sender inn funksjonen, hvis knappen er trykket ned
+        if (check_stopbutton_pushed(&overordnet_ko[0], &oppStopp[0], &nedStopp[0], &heislys[0], &g_elevator_direction)){  //Sender inn funksjonen, hvis knappen er trykket ned
+            g_floor_stop_case_e=1;
             continue;                                                        //Hopp tilbake til toppen av while løkken
             
         }else{
             deactivate_stop_light();                                         //skrur av lyset
-            fetch_order_from_floor(&oppStopp[0], &nedStopp[0], &overordnet_ko[0]);
-            activate_floor_order_lights(&oppStopp[0], &nedStopp[0]);
+            fetch_order_from_floor(&oppStopp[0], &nedStopp[0],&heislys[0], &overordnet_ko[0]);
+            activate_floor_order_lights(&oppStopp[0], &nedStopp[0], &heislys[0]);
 
-            fetch_order_from_elevator(&overordnet_ko[0]);
-            activate_elevator_lights(&overordnet_ko[0]);
+           // fetch_order_from_elevator(&overordnet_ko[0]);
+            //activate_elevator_lights(&overordnet_ko[0]);
 
             //__________________
 
@@ -83,7 +84,7 @@ int main(){
             g_floorstop= check_for_orders_at_floor(g_floor_sensor, &overordnet_ko[0], &oppStopp[0], &nedStopp[0], &g_elevator_direction);
             //printf("%i\n", g_floorstop);
             //______________________________
-                    if(g_floorstop==1){
+                    if(g_floorstop==1||(g_floor_stop_case_e==1&&g_floor_sensor>-1)){
                         elevio_doorOpenLamp(1);
                         g_elevator_direction=DIRN_STOP;
                         if (g_ref_time==0){
@@ -94,8 +95,9 @@ int main(){
                         if(check_for_three_seconds(g_ref_time)){
                             if(elevio_obstruction()==0){
                                 g_ref_time=0;
+                                g_floor_stop_case_e=0;
                                 elevio_doorOpenLamp(0);
-                                delete_and_sort_queue(g_floor_sensor, &overordnet_ko[0], &oppStopp[0], &nedStopp[0]);
+                                delete_and_sort_queue(g_floor_sensor, &overordnet_ko[0], &oppStopp[0], &nedStopp[0], &heislys[0]);
                             }
                         
 

@@ -56,27 +56,22 @@ void update_previous_floor_state(int floor_sensor, int *previous_floor){
     }
 }
 
-int check_stopbutton_pushed(int * heis_ko, int * opp_ko, int * ned_ko, MotorDirection * direction){
+int check_stopbutton_pushed(int * heis_ko, int * opp_ko, int * ned_ko,int * heispanel_lys, MotorDirection * direction){
     if(elevio_stopButton() == 0){                               //Hvis knappen ikke er trykket inn 
         return 0;                                               //returnerer vi 0 eller "false"
     }
     *direction=DIRN_STOP;
     elevio_motorDirection(DIRN_STOP);                           //Hvis ikke er den trykket inn, og vi skal stoppe
     activate_stop_light();                                      //Så skrur vi på lyset
-    delete_queue_stopbutton_pressed(heis_ko, opp_ko, ned_ko);   //sletter alle bestillinger
+    delete_queue_stopbutton_pressed(heis_ko, opp_ko, ned_ko, heispanel_lys);   //sletter alle bestillinger
     return 1;                                                   //returnerer 1 eller "true", slik at vi får hoppet inn i en if-setning 
                                                                 //som har continue, slik at vi hopper tilbake til toppen av while-løkken
                                                                 //så slipper vi å ha break
 }
 
-int emergency_stop(){                                                 //lager en nødstopp
-    if(elevio_obstruction() == 1 &&  elevio_stopButton() == 1){       //Hvis både stopp og obstruction er høy
-        return 1;                                                     //så returnerer vi TRUE som skal aktivere en break
-    }
-    return 0;                                                         // ellers ingenting
-}
 
-void delete_queue_stopbutton_pressed(int * heis_ko, int * opp_ko, int * ned_ko){
+
+void delete_queue_stopbutton_pressed(int * heis_ko, int * opp_ko, int * ned_ko, int * heispanellys){
                                                         //5 elementer i heis_ko
     int opp_ned_ko_storrelse = 4;                       //4 elementer i både opp og ned ko
     for(int element = 0; element < ko_size; element++){
@@ -85,7 +80,9 @@ void delete_queue_stopbutton_pressed(int * heis_ko, int * opp_ko, int * ned_ko){
     for(int element = 0; element < opp_ned_ko_storrelse; element++){
         *(opp_ko + element) = 0;                        //skal settes til false
         *(ned_ko + element) = 0;
-    }    
+        *(heispanellys+element)=0;
+    }   
+    activate_floor_order_lights(opp_ko, ned_ko, heispanellys);
 }
 
 void activate_stop_light(){
@@ -104,31 +101,33 @@ void deactivate_stop_light(){
    
 }
 
-void fetch_order_from_floor(int * opp_vektor, int * ned_vektor, int* heis_ko){
+void fetch_order_from_floor(int * opp_vektor, int * ned_vektor, int* heis_lys_ko, int * overordnet_ko){
     
-    int * floor_lib[2]={opp_vektor, ned_vektor};
+    int * floor_lib[3]={opp_vektor, ned_vektor, heis_lys_ko};
     
     for(int f = 0; f < N_FLOORS; f++){
-        for(int b=0; b<N_BUTTONS-1; b++){
+        for(int b=0; b<N_BUTTONS; b++){
             if(elevio_callButton(f,b)){
                 *(floor_lib[b]+f)=1;
-               // add_to_ko(heis_ko, f);      //OBSOBSOBS. må legge til en ny array som bestemmer lys i køen. for nå skrus flere lys på. 
+               add_to_ko(overordnet_ko, f);      //OBSOBSOBS. må legge til en ny array som bestemmer lys i køen. for nå skrus flere lys på. 
             }
         }
     }
 }
 
-void activate_floor_order_lights(int * opp_vektor, int * ned_vektor){
+void activate_floor_order_lights(int * opp_vektor, int * ned_vektor, int * heis_vektor){
     int array_size=4;
     int opp_knapp = BUTTON_HALL_UP;
     int ned_knapp= BUTTON_HALL_DOWN;
+    int heis_knapp = BUTTON_CAB;
 
     for(int i =0; i < array_size; i++){
         elevio_buttonLamp(i, opp_knapp, *(opp_vektor+i));
         elevio_buttonLamp(i, ned_knapp, *(ned_vektor+i));
+        elevio_buttonLamp(i, heis_knapp, *(heis_vektor+i));
     }
 }
-
+/*
 void fetch_order_from_elevator(int * ko_vektor){
     for (int f=0; f < N_FLOORS; f++){
         if(elevio_callButton(f, BUTTON_CAB)){
@@ -136,7 +135,7 @@ void fetch_order_from_elevator(int * ko_vektor){
 
         }
     }
-}
+}*/
 
 void add_to_ko(int* ko, int added_floor){
     
@@ -162,15 +161,15 @@ int check_if_element_not_in_queue(int* queue, int element){
     return element_not_found;
 
 }
+/*
+void activate_elevator_lights(int * ko){                //Trengs denne?, tror ikke det
 
-void activate_elevator_lights(int * ko){
-
-    /*
+    
     for(int i =0; i < ko_size; i++){
         if(*(ko+i)!=-1){
             elevio_buttonLamp(*(ko+i), BUTTON_CAB, 1);
         }
-    }*/
+    }
     for(int j=0; j < N_FLOORS; j++){
         if(check_if_element_not_in_queue(ko, j)){
             elevio_buttonLamp(j, BUTTON_CAB, 0);
@@ -179,7 +178,7 @@ void activate_elevator_lights(int * ko){
             elevio_buttonLamp(j, BUTTON_CAB, 1);
         }
     }
-}
+}*/
 
 int check_for_orders_at_floor(int floor_sensor, int * heis_ko, int * opp_ko, int * ned_ko, MotorDirection * direction){
     int stop =0;
@@ -202,9 +201,10 @@ int check_for_orders_at_floor(int floor_sensor, int * heis_ko, int * opp_ko, int
 
 }
 
-void delete_and_sort_queue(int floor_sensor, int * heis_ko, int * opp_ko, int *ned_ko){
+void delete_and_sort_queue(int floor_sensor, int * heis_ko, int * opp_ko, int *ned_ko, int * heis_lys){
     *(opp_ko+floor_sensor)=0;
     *(ned_ko+floor_sensor)=0;
+    *(heis_lys+floor_sensor)=0;
     for (int i = 0; i < ko_size-1; i++){
         if (*(heis_ko+i)==floor_sensor){
             for(int j=0; j < ko_size-i-1; j++){
