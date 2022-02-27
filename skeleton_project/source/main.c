@@ -19,11 +19,13 @@ int main(){
     int nedStopp[4]={0,0,0,0};
     int overordnet_ko[5]={-1,-1,-1,-1,-1};
     int g_floorstop=0;
-    int g_time_count=0;
+ 
 
-    int temp=0;  //midlertidig testkonstant
-    
-    int this_computer_clock_freq = 2.9*pow(10,4);
+
+   
+
+    const double processor_freq = 2.9 * pow(10,4);
+    time_t g_ref_time=0;
     
 
     
@@ -34,29 +36,19 @@ int main(){
     startup_procedure(&g_floor_sensor, &g_elevator_direction);
     update_previous_floor_state(g_floor_sensor, &g_previous_floor);
     elevio_floorIndicator(g_previous_floor);
-    time_t t1 = time(NULL);
-    time_t t2 = time(NULL);    
-    
+
 
     
     printf("=== Example Program ===\n");
     printf("Press the stop button on the elevator panel to exit\n");
-    printf("Difftime: %f\n", difftime(t2,t1));
-    while(difftime(t2,t1) < 3.0){
-        t2 = time(NULL);
-        printf("Difftime: %f\n", difftime(t2,t1));
-    }   
-
-    printf("Clocks_per_sec = %d\n", CLOCKS_PER_SEC);
-
+    
     while(1){
         //routine check
+       
         g_floor_sensor=elevio_floorSensor();
         
         update_previous_floor_state(g_floor_sensor, &g_previous_floor);
         elevio_floorIndicator(g_previous_floor);
-
-       //time_t t2 = time(NULL);
         
          
         //routine check dione
@@ -94,22 +86,26 @@ int main(){
                     if(g_floorstop==1){
                         elevio_doorOpenLamp(1);
                         g_elevator_direction=DIRN_STOP;
-                        if(g_time_count <THREE_SECONDS_IN_STEPS){
-                            g_time_count= g_time_count+1;
-                        }else{
+                        if (g_ref_time==0){
+                            g_ref_time= clock()/processor_freq;
+                        }
+                        
+                        
+                        if(check_for_three_seconds(g_ref_time)){
                             if(elevio_obstruction()==0){
-                                g_time_count=0;
+                                g_ref_time=0;
                                 elevio_doorOpenLamp(0);
                                 delete_and_sort_queue(g_floor_sensor, &overordnet_ko[0], &oppStopp[0], &nedStopp[0]);
                             }
-                        }
+                        
 
-                    }
+                    }}
 
             //______________________________
 
            //printf("ko=[%i, %i, %i, %i, %i]", overordnet_ko[0],overordnet_ko[1], overordnet_ko[2], overordnet_ko[3], overordnet_ko[4]);
            elevio_motorDirection(g_elevator_direction);
+           
         }
 
 

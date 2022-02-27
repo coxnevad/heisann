@@ -1,6 +1,19 @@
 #include "floor_state.h"
 
 
+int check_for_three_seconds(time_t ref_time){                                       //Tar inn en tidsreferanse basert på datamaskinen sin klokkefrek, 
+      double processor_freq = 2.9 * pow(10,4);                                                                               //så skal vi sammenligne den med hvor mange klokketicks/freq som har gått siden
+                                                   //Så returnerer vi enten True eller False, ut ifra det.
+                                           //2.9 GHz er prosessoren sin oppgitte klokkefrekvens på PC-en, men vi må endre på potensen her
+    if(fabs(difftime(ref_time, clock()/processor_freq)) >= 3){      
+        printf("time: %f\n", fabs(difftime(ref_time, clock()/processor_freq)));                //Hvis differansen er på 3 sek, så returnerer vi True
+            return 1;                                                               //Hvis ikke returnerer vi False.
+    }                                                                               //Har funnet ut at pow(10,4) er det som egentlig funker og gir oss "realistiske resultater"
+    else{                                                                       
+        return 0;
+    }
+}
+
 
 void update_current_floor_state(float* current_floor, int floor_sensor, MotorDirection *direction, int * previous_floor){
     float differance=0.0;                               //variabelen som skal inneholde differansen (i fabsoluttverdi) mellom den forrige og eventuelt nye verdien til current floor. 

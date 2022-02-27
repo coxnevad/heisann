@@ -31,3 +31,6 @@ void activate_elevator_lights(int * ko);
 int check_for_orders_at_floor(int floor, int * heis_ko, int * opp_ko, int * ned_ko, MotorDirection * direction);
 
 void delete_and_sort_queue(int floor, int * heis_ko, int * opp_ko, int *ned_ko);
+
+
+int check_for_three_seconds(time_t ref_time);
