@@ -60,13 +60,14 @@ int main(){
 
         if (check_stopbutton_pushed(&overordnet_ko[0], &oppStopp[0], &nedStopp[0], &heislys[0], &g_elevator_direction)){  //Sender inn funksjonen, hvis knappen er trykket ned
             g_floor_stop_case_e=1;
+            g_ref_time=0;
             continue;                                                        //Hopp tilbake til toppen av while løkken
             
         }else{
             deactivate_stop_light();                                         //skrur av lyset
             fetch_order_from_floor(&oppStopp[0], &nedStopp[0],&heislys[0], &overordnet_ko[0]);
             activate_floor_order_lights(&oppStopp[0], &nedStopp[0], &heislys[0]);
-
+            //update_special_floor_order_case(&oppStopp[0], &nedStopp[0]);
            // fetch_order_from_elevator(&overordnet_ko[0]);
             //activate_elevator_lights(&overordnet_ko[0]);
 
@@ -81,7 +82,7 @@ int main(){
             }
             update_current_floor_state(&g_current_floor,g_floor_sensor, &g_elevator_direction, &g_previous_floor);
 
-            g_floorstop= check_for_orders_at_floor(g_floor_sensor, &overordnet_ko[0], &oppStopp[0], &nedStopp[0], &g_elevator_direction);
+            g_floorstop= check_for_orders_at_floor(g_floor_sensor, &oppStopp[0], &nedStopp[0],&heislys[0] ,&g_elevator_direction, &overordnet_ko[0]);
             //printf("%i\n", g_floorstop);
             //______________________________
                     if(g_floorstop==1||(g_floor_stop_case_e==1&&g_floor_sensor>-1)){

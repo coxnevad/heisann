@@ -27,9 +27,11 @@ int check_if_element_not_in_queue(int* queue, int element);
 
 //void activate_elevator_lights(int * ko);
 
-int check_for_orders_at_floor(int floor, int * heis_ko, int * opp_ko, int * ned_ko, MotorDirection * direction);
+int check_for_orders_at_floor(int floor, int * opp_ko, int * ned_ko,int* heis_lys, MotorDirection * direction, int * ko);
 
 void delete_and_sort_queue(int floor, int * heis_ko, int * opp_ko, int *ned_ko, int * heis_lys);
 
 
 int check_for_three_seconds(time_t ref_time);
+
+//void update_special_floor_order_case(int * opp_ko, int * ned_ko);

@@ -108,6 +108,7 @@ void fetch_order_from_floor(int * opp_vektor, int * ned_vektor, int* heis_lys_ko
     for(int f = 0; f < N_FLOORS; f++){
         for(int b=0; b<N_BUTTONS; b++){
             if(elevio_callButton(f,b)){
+                
                 *(floor_lib[b]+f)=1;
                add_to_ko(overordnet_ko, f);      //OBSOBSOBS. må legge til en ny array som bestemmer lys i køen. for nå skrus flere lys på. 
             }
@@ -180,7 +181,7 @@ void activate_elevator_lights(int * ko){                //Trengs denne?, tror ik
     }
 }*/
 
-int check_for_orders_at_floor(int floor_sensor, int * heis_ko, int * opp_ko, int * ned_ko, MotorDirection * direction){
+int check_for_orders_at_floor(int floor_sensor, int * opp_ko, int * ned_ko,int* heis_lys, MotorDirection * direction, int *ko){
     int stop =0;
     if(floor_sensor ==-1){
         return stop;
@@ -193,8 +194,16 @@ int check_for_orders_at_floor(int floor_sensor, int * heis_ko, int * opp_ko, int
         if(*(ned_ko+floor_sensor)==1){
             stop = 1;
         }
+    }else if(*direction== DIRN_STOP){
+        if((*(opp_ko+floor_sensor)==1)||(*(ned_ko+floor_sensor)==1))
+        stop = 1;
     }
-    if(check_if_element_not_in_queue(heis_ko, floor_sensor)==0){
+    
+    if(*(heis_lys+floor_sensor)==1){
+        stop = 1;
+    
+    }
+    if(*ko==floor_sensor){
         stop = 1;
     }
     return stop;
@@ -213,3 +222,8 @@ void delete_and_sort_queue(int floor_sensor, int * heis_ko, int * opp_ko, int *n
         }
     }
 }
+
+/*void update_special_floor_order_case(int * opp_ko, int * ned_ko){
+    *(opp_ko+3)=*(ned_ko+3);
+    *(ned_ko+0)=*(opp_ko+0);
+}*/
