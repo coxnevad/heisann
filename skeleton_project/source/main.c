@@ -81,11 +81,11 @@ int main(){
                 g_elevator_direction=DIRN_DOWN;
             }
             update_current_floor_state(&g_current_floor,g_floor_sensor, &g_elevator_direction, &g_previous_floor);
-
+            
             g_floorstop= check_for_orders_at_floor(g_floor_sensor, &oppStopp[0], &nedStopp[0],&heislys[0] ,&g_elevator_direction, &overordnet_ko[0]);
             //printf("%i\n", g_floorstop);
             //______________________________
-                    if(g_floorstop==1||(g_floor_stop_case_e==1&&g_floor_sensor>-1)){
+                    if(g_floorstop==1||((g_floor_stop_case_e==1)&&(g_floor_sensor>-1))){
                         elevio_doorOpenLamp(1);
                         g_elevator_direction=DIRN_STOP;
                         if (g_ref_time==0){
@@ -102,13 +102,20 @@ int main(){
                             }
                         
 
-                    }}
+                    }
+                    
+                    }
 
             //______________________________
 
-           //printf("ko=[%i, %i, %i, %i, %i]", overordnet_ko[0],overordnet_ko[1], overordnet_ko[2], overordnet_ko[3], overordnet_ko[4]);
+           //printf("ko=[%i, %i, %i, %i, %i]\n", overordnet_ko[0],overordnet_ko[1], overordnet_ko[2], overordnet_ko[3], overordnet_ko[4]);
+           //printf("ko=[%i, %i, %i, %i]\n", nedStopp[0],nedStopp[1], nedStopp[2], nedStopp[3]);
            elevio_motorDirection(g_elevator_direction);
-           
+           if(((g_floor_stop_case_e==1)&&(g_floor_sensor==-1))){
+               g_floor_stop_case_e=0;
+           }
+           printf("%f\n", g_current_floor);
+          
         }
 
 

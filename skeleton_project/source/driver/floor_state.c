@@ -29,10 +29,12 @@ void update_current_floor_state(float* current_floor, int floor_sensor, MotorDir
            possible_new_current_floor_value = *previous_floor + 0.5;
             break;
         
+        
         default:
+            possible_new_current_floor_value= *current_floor;
             break;  
         }                                                                                            //Sjekker om det er en gyldig differanse mellom tidligere og eventuelt nye verdi av current_floor
-        differance=fabs(possible_new_current_floor_value-former_current_floor_value);                //beholder verdien om differansen er mindre enn 1, forkaster den hvis ikke. 
+        differance=fabs((possible_new_current_floor_value)-(former_current_floor_value));                //beholder verdien om differansen er mindre enn 1, forkaster den hvis ikke. 
         if(differance <1){
             *current_floor=possible_new_current_floor_value;
         }
@@ -189,22 +191,28 @@ int check_for_orders_at_floor(int floor_sensor, int * opp_ko, int * ned_ko,int* 
     if (*direction == DIRN_UP){
         if(*(opp_ko+floor_sensor)==1){
             stop = 1;
+            
         }
     }else if(*direction== DIRN_DOWN){
         if(*(ned_ko+floor_sensor)==1){
             stop = 1;
+            
         }
     }else if(*direction== DIRN_STOP){
-        if((*(opp_ko+floor_sensor)==1)||(*(ned_ko+floor_sensor)==1))
+        if((*(opp_ko+floor_sensor)==1)||(*(ned_ko+floor_sensor)==1)){
         stop = 1;
+        
+        }
     }
     
     if(*(heis_lys+floor_sensor)==1){
         stop = 1;
+       
     
     }
     if(*ko==floor_sensor){
         stop = 1;
+       
     }
     return stop;
 
