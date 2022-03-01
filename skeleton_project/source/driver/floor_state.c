@@ -48,62 +48,62 @@ void update_previous_floor_state(int floor_sensor, int *previous_floor){
 
 
 
-void fetch_order_from_floor(int * stop_array_opp, int * stop_array_ned, int* heispanel_lys_array, int * heis_ko){
+void fetch_order_from_floor(int * stop_array_up, int * stop_array_down, int* elevator_panel_lights_array, int * elevator_queue){
     
-    int * floor_lib[3]={stop_array_opp, stop_array_ned, heispanel_lys_array};
+    int * floor_lib[3]={stop_array_up, stop_array_down, elevator_panel_lights_array};
     
     for(int f = 0; f < N_FLOORS; f++){
         for(int b=0; b<N_BUTTONS; b++){
-            if(elevio_callButton(f,b)){
-                
+            //If button is pushed:
+            if(elevio_callButton(f,b)){   
                 *(floor_lib[b]+f)=1;
-               add_to_ko(heis_ko, f);      //OBSOBSOBS. må legge til en ny array som bestemmer lys i køen. for nå skrus flere lys på. 
+               add_to_ko(elevator_queue, f);       
             }
         }
     }
 }
 
-void update_floor_order_lights(int * stop_array_opp, int * stop_array_ned, int * heispanel_lys_array){
+void update_floor_order_lights(int * stop_array_up, int * stop_array_down, int * elevator_panel_lights_array){
     int array_size=4;
     int opp_knapp = BUTTON_HALL_UP;
     int ned_knapp= BUTTON_HALL_DOWN;
     int heis_knapp = BUTTON_CAB;
 
     for(int i =0; i < array_size; i++){
-        elevio_buttonLamp(i, opp_knapp, *(stop_array_opp+i));
-        elevio_buttonLamp(i, ned_knapp, *(stop_array_ned+i));
-        elevio_buttonLamp(i, heis_knapp, *(heispanel_lys_array+i));
+        elevio_buttonLamp(i, opp_knapp, *(stop_array_up+i));
+        elevio_buttonLamp(i, ned_knapp, *(stop_array_down+i));
+        elevio_buttonLamp(i, heis_knapp, *(elevator_panel_lights_array+i));
     }
 }
 
-int check_for_orders_at_floor(int floor_sensor, int * stop_array_opp, int * stop_array_ned,int* heispanel_lys_array, MotorDirection * direction, int *heis_ko){
+int check_for_orders_at_floor(int floor_sensor, int * stop_array_up, int * stop_array_down,int* elevator_panel_lights_array, MotorDirection * direction, int *elevator_queue){
     int stop =0;
     if(floor_sensor ==-1){
         return stop;
     }
     if (*direction == DIRN_UP){
-        if(*(stop_array_opp+floor_sensor)==1){
+        if(*(stop_array_up+floor_sensor)==1){
             stop = 1;
             
         }
     }else if(*direction== DIRN_DOWN){
-        if(*(stop_array_ned+floor_sensor)==1){
+        if(*(stop_array_down+floor_sensor)==1){
             stop = 1;
             
         }
     }else if(*direction== DIRN_STOP){
-        if((*(stop_array_opp+floor_sensor)==1)||(*(stop_array_ned+floor_sensor)==1)){
+        if((*(stop_array_up+floor_sensor)==1)||(*(stop_array_down+floor_sensor)==1)){
         stop = 1;
         
         }
     }
     
-    if(*(heispanel_lys_array+floor_sensor)==1){
+    if(*(elevator_panel_lights_array+floor_sensor)==1){
         stop = 1;
        
     
     }
-    if(*heis_ko==floor_sensor){
+    if(*elevator_queue==floor_sensor){
         stop = 1;
        
     }
@@ -112,12 +112,12 @@ int check_for_orders_at_floor(int floor_sensor, int * stop_array_opp, int * stop
 }
 
 
-void decide_direction_state(int * heis_ko, MotorDirection * direction, float * current_floor){
-     if(*heis_ko==-1){
+void decide_direction_state(int * elevator_queue, MotorDirection * direction, float * current_floor){
+     if(*elevator_queue==-1){
                 *direction=DIRN_STOP;
-            }else if(*current_floor < *heis_ko){
+            }else if(*current_floor < *elevator_queue){
                 *direction=DIRN_UP;
-            }else if(*heis_ko < *current_floor){
+            }else if(*elevator_queue < *current_floor){
                 *direction=DIRN_DOWN;
             }
 }

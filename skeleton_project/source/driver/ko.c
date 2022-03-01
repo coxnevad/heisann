@@ -1,12 +1,12 @@
-#include "overordnet_include.h"
+#include "head_include_file.h"
 
-void add_to_ko(int* heis_ko, int added_floor){
+void add_to_ko(int* elevator_queue, int added_floor){
     
-    if(check_if_element_not_in_queue(heis_ko, added_floor)){
+    if(check_if_element_not_in_queue(elevator_queue, added_floor)){
 
     for(int k_index = 0; k_index<ko_size; k_index++){
-        if(*(heis_ko+k_index)==-1){
-            *(heis_ko+k_index)=added_floor;
+        if(*(elevator_queue+k_index)==-1){
+            *(elevator_queue+k_index)=added_floor;
             break;
         }
     }
@@ -25,14 +25,14 @@ int check_if_element_not_in_queue(int* queue, int element){
 
 }
 
-void delete_and_sort_queue(int floor_sensor, int * heis_ko, int * stop_array_opp, int *stop_array_ned, int * heispanel_lys_array){
-    *(stop_array_opp+floor_sensor)=0;
-    *(stop_array_ned+floor_sensor)=0;
-    *(heispanel_lys_array+floor_sensor)=0;
+void delete_and_sort_queue(int floor_sensor, int * elevator_queue, int * stop_array_up, int *stop_array_down, int * elevator_panel_lights_array){
+    *(stop_array_up+floor_sensor)=0;
+    *(stop_array_down+floor_sensor)=0;
+    *(elevator_panel_lights_array+floor_sensor)=0;
     for (int i = 0; i < ko_size-1; i++){
-        if (*(heis_ko+i)==floor_sensor){
+        if (*(elevator_queue+i)==floor_sensor){
             for(int j=0; j < ko_size-i-1; j++){
-                *(heis_ko+i+j)=*(heis_ko+i+j+1);
+                *(elevator_queue+i+j)=*(elevator_queue+i+j+1);
             }
         }
     }
