@@ -35,6 +35,7 @@ int main(){
     
     
     //initialiserer posisjonen
+    
     startup_procedure(&g_floor_sensor, &g_elevator_direction);
     update_previous_floor_state(g_floor_sensor, &g_previous_floor);
     elevio_floorIndicator(g_previous_floor);
@@ -88,21 +89,25 @@ int main(){
                     if(g_floorstop==1||((g_floor_stop_case_e==1)&&(g_floor_sensor>-1))){
                         elevio_doorOpenLamp(1);
                         g_elevator_direction=DIRN_STOP;
+                        
+                            
                         if (g_ref_time==0){
                             g_ref_time= clock()/processor_freq;
+                        }else if(elevio_obstruction()==1){
+                            g_ref_time= clock()/processor_freq;
                         }
+
                         
                         
                         if(check_for_three_seconds(g_ref_time)){
-                            if(elevio_obstruction()==0){
+                            
                                 g_ref_time=0;
                                 g_floor_stop_case_e=0;
                                 elevio_doorOpenLamp(0);
                                 delete_and_sort_queue(g_floor_sensor, &overordnet_ko[0], &oppStopp[0], &nedStopp[0], &heislys[0]);
                             }
-                        
 
-                    }
+                    
                     
                     }
 
@@ -114,7 +119,7 @@ int main(){
            if(((g_floor_stop_case_e==1)&&(g_floor_sensor==-1))){
                g_floor_stop_case_e=0;
            }
-           printf("%f\n", g_current_floor);
+           
           
         }
 

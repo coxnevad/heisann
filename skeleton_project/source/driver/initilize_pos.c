@@ -3,6 +3,7 @@
 //sjekker om den er i en udefinert etasje, er den det beveger den seg ned til den er i en definert etasje. 
 
 void startup_procedure(int *floor_ref, MotorDirection *direction_ref){
+    
     while(elevio_floorSensor()<0){
         elevio_motorDirection(DIRN_UP);
         nanosleep(&(struct timespec){0, 20*1000*1000}, NULL);
