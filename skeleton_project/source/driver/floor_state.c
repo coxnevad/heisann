@@ -57,7 +57,7 @@ void fetch_order_from_floor(int * stop_array_up, int * stop_array_down, int* ele
             //If button is pushed:
             if(elevio_callButton(f,b)){   
                 *(floor_lib[b]+f)=1;
-               add_to_ko(elevator_queue, f);       
+               add_to_queue(elevator_queue, f);       
             }
         }
     }

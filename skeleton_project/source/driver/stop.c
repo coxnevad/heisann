@@ -35,7 +35,7 @@ void deactivate_stop_light(){
 void delete_queue_stopbutton_pressed(int * elevator_queue, int * stop_array_up, int * stop_array_down, int * elevator_panel_lights_array){
                                                         //5 elementer i elevator_queue
     int opp_stop_array_down_storrelse = 4;                       //4 elementer i både opp og ned elevator_queue
-    for(int element = 0; element < ko_size; element++){
+    for(int element = 0; element < queue_size; element++){
         *(elevator_queue + element) = -1;                      //her skal alle elementene i køen settes til
     }                                                   // -1 som er "udefinert"
     for(int element = 0; element < opp_stop_array_down_storrelse; element++){
