@@ -26,9 +26,11 @@ int check_if_element_not_in_queue(int* queue, int element){
 }
 
 void delete_and_sort_queue(int floor_sensor, int * elevator_queue, int * stop_array_up, int *stop_array_down, int * elevator_panel_lights_array){
+    //set the specific array elements from high "1" to low "0"
     *(stop_array_up+floor_sensor)=0;
     *(stop_array_down+floor_sensor)=0;
     *(elevator_panel_lights_array+floor_sensor)=0;
+    //Then sort the main elevator queue
     for (int i = 0; i < queue_size-1; i++){
         if (*(elevator_queue+i)==floor_sensor){
             for(int j=0; j < queue_size-i-1; j++){

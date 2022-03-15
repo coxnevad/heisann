@@ -37,6 +37,7 @@ void update_current_floor_state(float* current_floor, int floor_sensor, MotorDir
 }
 
 void update_previous_floor_state(int floor_sensor, int *previous_floor){
+    //if we are not in an undefined floor state:
     if (floor_sensor > -1){
         *previous_floor=floor_sensor;        
     }
@@ -67,6 +68,7 @@ void update_floor_order_lights(int * stop_array_up, int * stop_array_down, int *
     int heis_knapp = BUTTON_CAB;
 
     for(int i =0; i < array_size; i++){
+        //Update button lights
         elevio_buttonLamp(i, opp_knapp, *(stop_array_up+i));
         elevio_buttonLamp(i, ned_knapp, *(stop_array_down+i));
         elevio_buttonLamp(i, heis_knapp, *(elevator_panel_lights_array+i));
@@ -75,9 +77,12 @@ void update_floor_order_lights(int * stop_array_up, int * stop_array_down, int *
 
 int check_for_orders_at_floor(int floor_sensor, int * stop_array_up, int * stop_array_down,int* elevator_panel_lights_array, MotorDirection * direction, int *elevator_queue){
     int stop =0;
+    //if the elevator is in an undefined floor state, do not update stop:
     if(floor_sensor ==-1){
         return stop;
     }
+
+    //Based on the motor direction and arrays, update stop:
     if (*direction == DIRN_UP){
         if(*(stop_array_up+floor_sensor)==1){
             stop = 1;
@@ -98,7 +103,6 @@ int check_for_orders_at_floor(int floor_sensor, int * stop_array_up, int * stop_
     if(*(elevator_panel_lights_array+floor_sensor)==1){
         stop = 1;
        
-    
     }
     if(*elevator_queue==floor_sensor){
         stop = 1;
@@ -110,9 +114,12 @@ int check_for_orders_at_floor(int floor_sensor, int * stop_array_up, int * stop_
 
 
 void decide_direction_state(int * elevator_queue, MotorDirection * direction, float * current_floor){
+    //If the queue is empty
      if(*elevator_queue==-1){
                 *direction=DIRN_STOP;
-            }else if(*current_floor < *elevator_queue){
+            }
+            //if the queue is not empty:
+            else if(*current_floor < *elevator_queue){
                 *direction=DIRN_UP;
             }else if(*elevator_queue < *current_floor){
                 *direction=DIRN_DOWN;
