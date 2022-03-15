@@ -19,11 +19,11 @@
 
 /**
  * @brief Takes in the value of the floor sensor and moves the elevator until it has reached a defined floor.
- * Works by moving the elevator and checking if the floor is still undefined (-1). if the floor becomes defined, 
- * it will update the floor variable sent in, along with the direction 
+ * \n Works by moving the elevator upwards and checking if the floor is still undefined with a value of "-1". \n If the floor reaches a defined state, 
+ * it will update the floor variable sent in along with the direction of the motor. 
  * 
- * @param[in,out] floor_ref takes i a pointer to a floor referance
- * @param[in,out] direction_ref takes in a pointer to the motor direction 
+ * @param[in,out] floor_ref A pointer to a floor referance with the floor state value.
+ * @param[in,out] direction_ref A pointer to the motor direction. 
  * 
  * 
  */

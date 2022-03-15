@@ -47,7 +47,7 @@ void delete_queue_stopbutton_pressed(int * elevator_queue, int * stop_array_up, 
 }
 
 
-void stop_button_flag_discarder(int * stop_button_flag, int * floor_sensor){
+void stopbutton_flag_discarder(int * stop_button_flag, int * floor_sensor){
        if(((*stop_button_flag==1)&&(*floor_sensor==-1))){
                *stop_button_flag=0;
            }

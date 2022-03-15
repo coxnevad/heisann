@@ -82,7 +82,7 @@ int main(){
 
 
             //discards stop_button flag in case of returning from stop. 
-            stop_button_flag_discarder(&g_stop_button_flag_case, &g_floor_sensor);
+            stopbutton_flag_discarder(&g_stop_button_flag_case, &g_floor_sensor);
         }
 
 
