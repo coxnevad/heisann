@@ -36,16 +36,6 @@ void update_current_floor_state(float* current_floor, int floor_sensor, MotorDir
  */
 void update_previous_floor_state(int floor_sensor, int *previous_floor);
 
-/**
- * @brief Fetches and adds orders to the elevator queue if the elevator buttons are pushed. 
- * It also updates the arrays that contain the information related to the floor panels.
- * 
- * @param[in,out] stop_array_up An array that indicates if the elevator floor panel up buttons are pushed.
- * @param[in,out] stop_array_down An array that indicates if the elevator floor panel down buttons are pushed.
- * @param[in,out] elevator_panel_lights_array An array that indicates if the elevator panel lights are on.
- * @param[out] elevator_queue An array that represents the queue system of the elevator.
- */
-void fetch_order_from_floor(int * stop_array_up, int * stop_array_down, int* elevator_panel_lights_array, int* elevator_queue);
 
 /**
  * @brief Updates the floor order lights on both the elevator panel and the elevator floor panel.

@@ -68,7 +68,7 @@ int main(){
             deactivate_stop_light();                                      
             
             //updates floor, position, direction and queues
-            fetch_order_from_floor(&g_up_Stop[0], &g_down_Stop[0],&g_elevator_panel_lights[0], &g_elevator_queue[0]);
+            fetch_order_from_floor_and_add_to_elevator_queue(&g_up_Stop[0], &g_down_Stop[0],&g_elevator_panel_lights[0], &g_elevator_queue[0]);
             update_floor_order_lights(&g_up_Stop[0], &g_down_Stop[0], &g_elevator_panel_lights[0]);
             decide_direction_state(&g_elevator_queue[0], &g_elevator_direction, &g_current_floor);
             update_current_floor_state(&g_current_floor,g_floor_sensor, &g_elevator_direction, &g_previous_floor);

@@ -63,12 +63,3 @@ void stopbutton_flag_discarder(int * stop_button_flag, int * floor_sensor);
  * @param[in] stop_array_down The array that indicates if the elevator floor panel down buttons are pushed.
  */
 void stop_at_floor_procedure(int * floorstop_flag, int * stop_button_flag, time_t * ref_time, MotorDirection * direction,int * floor_sensor, int * elevator_panel_lights_array, int * elevator_queue, int * stop_array_up, int* stop_array_down );
-
-/**
- * @brief Checks if three seconds have passed. It will return "1" or "TRUE" if 3 seconds or more have passed, "0" or "FALSE" if less than 3 seconds have passed.
- * \n Here we use the difftime function from the time library with ref_time and the time generated from the number of clock cycles since program started, in order to check if 3 seconds have passed.
- * 
- * @param[in] ref_time The variable that controls the time of the elevator door. It is the last time measurement made in the code.
- * @return int of value "1" or "TRUE" if 3 seconds have passed, else return "0" or "FALSE".
- */
-int check_for_three_seconds(time_t ref_time);

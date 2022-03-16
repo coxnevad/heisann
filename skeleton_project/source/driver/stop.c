@@ -58,6 +58,22 @@ void stopbutton_flag_discarder(int * stop_button_flag, int * floor_sensor){
            }
 }
 
+//Checks if three seconds have passed based on the difference between a reference time and the amount of (clock ticks)/processor freq since the program start
+int check_if_three_seconds_have_passed(time_t ref_time){                                        
+    double processor_freq = 2.9 * pow(10,4);                                                                                                      
+
+    //If 3 seconds or more have passed, return "1" or "TRUE"                                                                                     
+    if(fabs(difftime(ref_time, clock()/processor_freq)) >= 3){      
+        printf("time: %f\n", fabs(difftime(ref_time, clock()/processor_freq)));                
+            return 1;                                                               
+    }  
+    //Else return "0" or "FALSE"                                                                             
+    else{                                                                       
+        return 0;
+    }
+}
+
+
 void stop_at_floor_procedure(int * floorstop_flag, int * stop_button_flag, time_t * ref_time, MotorDirection * direction,int * floor_sensor, int * elevator_panel_lights_array, int * elevator_queue, int * stop_array_up, int* stop_array_down ){
         const double processor_freq = 2.9 * pow(10,4);
 
@@ -76,7 +92,7 @@ void stop_at_floor_procedure(int * floorstop_flag, int * stop_button_flag, time_
 
                         
                         //If 3 seconds have passed:
-                        if(check_for_three_seconds(*ref_time)){
+                        if(check_if_three_seconds_have_passed(*ref_time)){
                             
                                 *ref_time=0;
                                 *stop_button_flag=0;
@@ -89,16 +105,4 @@ void stop_at_floor_procedure(int * floorstop_flag, int * stop_button_flag, time_
 
 }
 
-int check_for_three_seconds(time_t ref_time){                                        
-    double processor_freq = 2.9 * pow(10,4);                                                                                                      
 
-    //If 3 seconds or more have passed, return "1" or "TRUE"                                                                                     
-    if(fabs(difftime(ref_time, clock()/processor_freq)) >= 3){      
-        printf("time: %f\n", fabs(difftime(ref_time, clock()/processor_freq)));                
-            return 1;                                                               
-    }  
-    //Else return "0" or "FALSE"                                                                             
-    else{                                                                       
-        return 0;
-    }
-}

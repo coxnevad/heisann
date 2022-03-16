@@ -46,20 +46,7 @@ void update_previous_floor_state(int floor_sensor, int *previous_floor){
 
 
 
-void fetch_order_from_floor(int * stop_array_up, int * stop_array_down, int* elevator_panel_lights_array, int * elevator_queue){
-    
-    int * floor_lib[3]={stop_array_up, stop_array_down, elevator_panel_lights_array};
-    
-    for(int f = 0; f < N_FLOORS; f++){
-        for(int b=0; b<N_BUTTONS; b++){
-            //If button is pushed:
-            if(elevio_callButton(f,b)){   
-                *(floor_lib[b]+f)=1;
-               add_to_queue(elevator_queue, f);       
-            }
-        }
-    }
-}
+
 
 void update_floor_order_lights(int * stop_array_up, int * stop_array_down, int * elevator_panel_lights_array){
     int array_size=4;

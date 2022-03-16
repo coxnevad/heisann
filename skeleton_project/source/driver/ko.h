@@ -12,23 +12,6 @@
 #include "head_include_file.h"
 
 /**
- * @brief Adds a floor order to the elevator queue
- * 
- * @param[in,out] elevator_queue An array that represents the queue system of the elevator.
- * @param[in] added_floor A variable to the floor order that is being added to the queue.
- */
-void add_to_queue(int* elevator_queue, int added_floor);
-
-/**
- * @brief Loops over the elevator queue and checks if an element is in the queue.
- * 
- * @param[in] queue An array that represents the queue system we want to iterate through.
- * @param element A variable to the element we want to look for in the queue system.
- * @return Return a value of "0" or "FALSE" if the element is in the queue, return "1" or "TRUE" if the element is not in the queue.
- */
-int check_if_element_not_in_queue(int* queue, int element);
-
-/**
  * @brief Deletes orders of the elevator queue, light array or the stop arrays when the elevator stops at a floor.
  * \n The arrays are handled by setting the indexed floor in the array to zero.
  * \n Deletes the first element of the elevator queue, then sorts the queue.
@@ -40,3 +23,14 @@ int check_if_element_not_in_queue(int* queue, int element);
  * @param[out] elevator_panel_lights_array An array that indicates if the elevator panel lights are on.
  */
 void delete_and_sort_queue(int floor, int * elevator_queue, int * stop_array_up, int *stop_array_down, int * elevator_panel_lights_array);
+
+/**
+ * @brief Fetches and adds orders to the elevator queue if the elevator buttons are pushed. 
+ * It also updates the arrays that contain the information related to the floor panels.
+ * 
+ * @param[in,out] stop_array_up An array that indicates if the elevator floor panel up buttons are pushed.
+ * @param[in,out] stop_array_down An array that indicates if the elevator floor panel down buttons are pushed.
+ * @param[in,out] elevator_panel_lights_array An array that indicates if the elevator panel lights are on.
+ * @param[out] elevator_queue An array that represents the queue system of the elevator.
+ */
+void fetch_order_from_floor_and_add_to_elevator_queue(int * stop_array_up, int * stop_array_down, int* elevator_panel_lights_array, int* elevator_queue);
