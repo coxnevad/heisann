@@ -1,5 +1,5 @@
 /**
- * @file ko.h
+ * @file queue.h
  * @author Simon Krane & Clemens Sundby Øxnevad
  * @brief This file handles the queue system of the elevator. How to add an element to the queue, checking if an element is a part of the queue and deleting and sorting a queue.
  * @version 0.1
